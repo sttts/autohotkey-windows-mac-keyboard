@@ -29,8 +29,6 @@ F10::SendInput {Volume_Mute}
 F11::SendInput {Volume_Down}
 F12::SendInput {Volume_Up}
 
-; LAlt & r::Send #r
-
 ; swap left command/windows key with left alt
 LWin::LAlt
 LAlt::Return ; add a semicolon in front of this line if you want to disable the windows key
@@ -98,27 +96,27 @@ LAlt & m::WinMinimize,a
 ^e::Send {End}
 ^a::Send {Home}
 
+LWin & r::SendInput #r
+
 ; Remap Windows + Tab to Alt + Tab.
 ;Lwin & Tab::AltTab
 ;Lalt & Tab::Send !{Tab}
 ;Lwin & Tab::Send #{Tab}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Cmd-Tab ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-*q:: ;one-key alt-tab (tested on Windows 7)
 $Tab::
 vAltTabTickCount := A_TickCount
 if WinActive("ahk_class TaskSwitcherWnd")
 	SendInput, {Tab}
-else
-{
+else if GetKeyState("LAlt", "P") {
 	SendInput, {Alt Down}{Tab}
 	SetTimer, AltTabSendTab, 50
-}
+} else 
+    SendInput, {Tab}
 return
 
 AltTabSendTab:
-if GetKeyState("q", "P")
-|| GetKeyState("Tab", "P")
+if GetKeyState("Tab", "P")
 	vAltTabTickCount := A_TickCount
 if WinActive("ahk_class TaskSwitcherWnd")
 && !(A_TickCount - vAltTabTickCount > 400)
@@ -163,7 +161,7 @@ LWin & 8::SendInput {{}
 LWin & 9::SendInput {}}
 
 ; Map Alt + R to ®
-LWin & r::SendInput {®}
+;LWin & r::SendInput {®}
 
 ; Map Alt + N to |
 LWin & 7::SendInput {|}
