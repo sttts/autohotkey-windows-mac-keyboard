@@ -29,9 +29,11 @@ F10::SendInput {Volume_Mute}
 F11::SendInput {Volume_Down}
 F12::SendInput {Volume_Up}
 
+; LAlt & r::Send #r
+
 ; swap left command/windows key with left alt
 LWin::LAlt
-; LAlt::LWin ; add a semicolon in front of this line if you want to disable the windows key
+LAlt::Return ; add a semicolon in front of this line if you want to disable the windows key
 
 ; Eject Key
 ;F20::SendInput {Insert} ; F20 doesn't show up on AHK anymore, see #3
@@ -52,43 +54,46 @@ F15::SendInput {Pause}
 ; --------------------------------------------------------------
 
 ; Make Ctrl + S work with cmd (windows) key
-!s::Send ^{s}
+LAlt & s::Send ^{s}
 
 ; Selecting
-!a::Send ^a
+LAlt & a::Send ^a
 
 ; Copying
-!c::Send ^c
+LAlt & c::Send ^c
 
 ; Pasting
-!v::Send ^v
+LAlt & v::Send ^v
 
 ; Cutting
-!x::Send ^x
+LAlt & x::Send ^x
 
 ; Opening
-!o::Send ^o
+LAlt & o::Send ^o
 
 ; Finding
-!f::Send ^f
+LAlt & f::Send ^f
 
 ; Undo
-!z::Send ^z
+LAlt & z::Send ^z
 
 ; Redo
-!y::Send ^y
+LAlt & y::Send ^y
 
 ; New tab
-!t::Send ^t
+LAlt & t::Send ^t
 
 ; close tab
-!w::Send ^w
+LAlt & w::Send ^w
 
 ; new doc
-!n::Send ^n
+LAlt & n::Send ^n
 
 ; Close windows (cmd + q to Alt + F4)
-!q::Send !{F4}
+LAlt & q::Send !{F4}
+
+; minimize windows
+LAlt & m::WinMinimize,a
 
 ^e::Send {End}
 ^a::Send {Home}
@@ -123,44 +128,6 @@ SetTimer, AltTabSendTab, Off
 return
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Alt-Tab ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This AutoHotkey script is to switch between open Windows of the same type and same App (.exe)
-; The "type" checking is based on the App's Title convention that stipulates that the App name should be at the end of the Window title (Eg: New Document - Word )
-; It works well with regular Window Apps, Chrome Shortcuts and Chrome Apps
-
-ExtractAppTitle(FullTitle)
-{	
-	AppTitle := SubStr(FullTitle, InStr(FullTitle, " ", false, -1) + 1)
-	Return AppTitle
-}
-
-; Alt + ` -  Activate NEXT Window of same type (title checking) of the current APP
-Lwin & Tab::
-WinGet, ActiveProcess, ProcessName, A
-WinGet, OpenWindowsAmount, Count, ahk_exe %ActiveProcess%
-
-If OpenWindowsAmount = 1  ; If only one Window exist, do nothing
-    Return
-Else
-	{
-		WinGetTitle, FullTitle, A
-		AppTitle := ExtractAppTitle(FullTitle)
-
-		SetTitleMatchMode, 2		
-		WinGet, WindowsWithSameTitleList, List, %AppTitle%
-		
-		If WindowsWithSameTitleList > 1 ; If several Window of same type (title checking) exist
-		{
-			WinActivate, % "ahk_id " WindowsWithSameTitleList%WindowsWithSameTitleList%	; Activate next Window	
-		}
-	}
-Return
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-; minimize windows
-!m::WinMinimize,a
-
 ; switch keyboard layout
 #^Space::SendInput {Ctrl UP}{LShift DOWN}
 
@@ -169,56 +136,51 @@ Return
 ; --------------------------------------------------------------
 
 ; Map Alt + L to @
-#l::SendInput {@}
-
-; Map Alt + N to \
-+#7::SendInput {\}
+LWin & l::SendInput {@}
 
 ; Map Alt + N to ©
-#g::SendInput {©}
+LWin & g::SendInput {©}
 
 ; Map Alt + o to ø
-#o::SendInput {ø}
+LWin & o::SendInput {ø}
 
 ; Map Alt + 5 to [
-#5::SendInput {[}
+LWin & 5::SendInput {[}
 
 ; Map Alt + 6 to ]
-#6::SendInput {]}
+LWin & 6::SendInput {]}
 
 ; Map Alt + E to €
-#e::SendInput {€}
+LWin & e::SendInput {€}
 
 ; Map Alt + - to –
-#-::SendInput {–}
+LWin & -::SendInput {–}
 
 ; Map Alt + 8 to {
-#8::SendInput {{}
+LWin & 8::SendInput {{}
 
 ; Map Alt + 9 to }
-#9::SendInput {}}
-
-; Map Alt + - to ±
-#+::SendInput {±}
+LWin & 9::SendInput {}}
 
 ; Map Alt + R to ®
-#r::SendInput {®}
+LWin & r::SendInput {®}
 
 ; Map Alt + N to |
-#7::SendInput {|}
+LWin & 7::SendInput {|}
 
 ; Map Alt + W to ∑
-#w::SendInput {∑}
+LWin & w::SendInput {∑}
 
 ; Map Alt + N to ~
-#n::SendInput {~}
+LWin & n::SendInput {~}
 
 ; Map Alt + 3 to #
-#3::SendInput {#}
+LWin & 3::SendInput {#}
 
-#r::#r
-
-
+#if getKeyState("LWin")
+Shift & 6::Send {^}{Space}
+Shift & 7::SendInput {\}
+#if
 
 ; --------------------------------------------------------------
 ; Custom mappings for special chars
@@ -231,34 +193,30 @@ Return
 ;^ä::SendInput {}} 
 
 ; alt-delete deletes previous word
-#BS::Send {LShift down}{LCtrl down}{Left}{LShift Up}{Lctrl up}{Backspace}
-
+LWin & BS::Send {LShift down}{LCtrl down}{Left}{LShift Up}{Lctrl up}{Backspace}
+^
 ; Navigation of smaller chunks (skip word)
-!Left::Send {ctrl down}{Left}{ctrl up}
-!Right::Send {ctrl down}{Right}{ctrl up}
+LWin & Left::Send {ctrl down}{Left}{ctrl up}
+LWin & Right::Send {ctrl down}{Right}{ctrl up}
 
 ; Navigation using of bigger chunks (Skip to start/end of line)
-#Left::Send {Home}
-#Right::Send {End}
-#Up::Send {PgUp}
-#Down::Send {PgDown}
+!Left::Send {Home}
+!Right::Send {End}
+!Up::Send {PgUp}
+!Down::Send {PgDown}
 
 ; Selection (uses a combination of the above with shift)
-#+Left::Send {ctrl down}{shift down}{Left}{shift up}{ctrl up}
-#+Right::Send {ctrl down}{shift down}{Right}{shift up}{ctrl up}
 ^+Left::Send {shift down}{Home}}{shift up}
 ^+Right::Send {shift down}{End}}{shift up}
-#+Up::Send {ctrl down}{shift down}{Up}}{shift up}{ctrl up}
-#+Down::Send {ctrl down}{shift down}{Down}}{shift up}{ctrl up}
 ^+Up::Send {Lctrl down}{shift down}{Home}}{shift up}{Lctrl up}
 ^+Down::Send {Lctrl down}{shift down}{End}}{shift up}{Lctrl up}
 
 ; Start Menu
-!Space::Send ^{Esc}
+LWin & Space::Send ^{Esc}
 
 ; Do not open start menu on Windows key or go to menu
-#~LAlt Up::Send {Blind}{vk07}
-#~LWin Up:: return
+;#~LAlt Up::Send {Blind}{vk07}
+;#~LWin Up:: return
 
 ; --------------------------------------------------------------
 ; Application specific
