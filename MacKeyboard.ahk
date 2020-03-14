@@ -98,6 +98,8 @@ Ctrl & Tab::AltTab
 ; minimize windows
 #m::WinMinimize,a
 
+; switch keyboard layout
+;!^Space::SendInput {Ctrl UP}{LShift DOWN}
 
 ; --------------------------------------------------------------
 ; OS X keyboard mappings for special chars
