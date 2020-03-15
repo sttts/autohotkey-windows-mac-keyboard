@@ -96,6 +96,8 @@ LAlt & m::WinMinimize,a
 ^e::Send {End}
 ^a::Send {Home}
 
+LAlt & LButton::Send {Ctrl Down}{Click}{Ctrl Up}
+
 LWin & r::SendInput #r
 
 ; Remap Windows + Tab to Alt + Tab.
