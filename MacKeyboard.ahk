@@ -72,7 +72,7 @@ LWin & o::Send ^o
 
 ; Finding
 LWin & f::Send ^f
-LWin & g::Send F3
+LWin & g::Send {F3}
 
 ; Undo
 LWin & z::Send ^z
@@ -94,6 +94,10 @@ LWin & q::Send !{F4}
 
 ; minimize windows
 LWin & m::WinMinimize,a
+
+; zoom
+LAlt & SC01B::Send ^{+}
+LAlt & -::Send ^{-}
 
 ^e::Send {End}
 ^a::Send {Home}

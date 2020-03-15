@@ -71,7 +71,7 @@ LAlt & o::Send ^o
 
 ; Finding
 LAlt & f::Send ^f
-LAlt & g::Send F3
+LAlt & g::Send {F3}
 
 ; Undo
 LAlt & z::Send ^z
@@ -93,6 +93,10 @@ LAlt & q::Send !{F4}
 
 ; minimize windows
 LAlt & m::WinMinimize,a
+
+; zoom
+LAlt & SC01B::Send ^{+}
+LAlt & -::Send ^{-}
 
 ^e::Send {End}
 ^a::Send {Home}
