@@ -224,7 +224,7 @@ LAlt & Right::Send {ctrl down}{Right}{ctrl up}
 ^+Down::Send {Lctrl down}{shift down}{End}}{shift up}{Lctrl up}
 
 ; Start Menu
-LAlt & Space::Send ^{Esc}
+LWin & Space::Send ^{Esc}
 
 ; Do not open start menu on Windows key or go to menu
 ;#~LAlt Up::Send {Blind}{vk07}
