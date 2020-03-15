@@ -1,4 +1,4 @@
-﻿;-----------------------------------------
+;-----------------------------------------
 ; Mac keyboard to Windows Key Mappings
 ;=========================================
 
@@ -97,6 +97,10 @@ LWin & m::WinMinimize,a
 ^e::Send {End}
 ^a::Send {Home}
 
+LWin & LButton::
+   Send {Ctrl Down}{Click}{Ctrl Up}
+return
+
 LWin & r::SendInput #r
 
 ; Remap Windows + Tab to Alt + Tab.
@@ -105,25 +109,34 @@ LWin & r::SendInput #r
 ;Lwin & Tab::Send #{Tab}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Cmd-Tab ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-$Tab::
-vAltTabTickCount := A_TickCount
-if WinActive("ahk_class TaskSwitcherWnd")
+$*Tab::
+if (WinActive("ahk_class TaskSwitcherWnd") || WinActive("ahk_class MultitaskingViewFrame")) {
+    OutputDebug, "Tab in task switcher"
 	SendInput, {Tab}
-else if GetKeyState("LWin", "P") {
-	SendInput, {LWin Down}{Tab}
-	SetTimer, AltTabSendTab, 50
-} else 
-    SendInput, {Tab}
+	return
+}
+if GetKeyState("LWin", "P") {
+    OutputDebug, "Tab with LWin"
+    if GetKeyState("LAlt", "P") {
+        Send, {LAlt Up}
+    }
+    Sleep 50
+    Send, {LAlt Down}{Tab}
+    Sleep 50
+    SetTimer, AltTabSendTab, 50
+} else {
+	OutputDebug, "Tab without LWin"
+}
 return
 
 AltTabSendTab:
-if GetKeyState("Tab", "P")
-	vAltTabTickCount := A_TickCount
-if WinActive("ahk_class TaskSwitcherWnd")
-&& !(A_TickCount - vAltTabTickCount > 400)
-	return
-SendInput, {LWin Up}
-SetTimer, AltTabSendTab, Off
+if !GetKeyState("LWin", "P") {
+    OutputDebug, "LWin up timer"
+    Send, {LAlt Up}{LWin Up}
+    SetTimer, AltTabSendTab, Off
+} else {
+    OutputDebug, "LWin still down timer"
+}
 return
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -133,7 +146,7 @@ return
 ; --------------------------------------------------------------
 ; OS X keyboard mappings for special chars
 ; --------------------------------------------------------------
-
+							
 ; Map Alt + L to @
 LAlt & l::SendInput {@}
 
