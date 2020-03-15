@@ -30,8 +30,9 @@ F11::SendInput {Volume_Down}
 F12::SendInput {Volume_Up}
 
 ; swap left command/windows key with left alt
-;LWin::LAlt
-;LAlt::LWin ; add a semicolon in front of this line if you want to disable the windows key
+; LWin::LAlt
+; LAlt::Return ; add a semicolon in front of this line if you want to disable the windows key
+LWin::Return
 
 ; Eject Key
 ;F20::SendInput {Insert} ; F20 doesn't show up on AHK anymore, see #3
@@ -52,108 +53,133 @@ F15::SendInput {Pause}
 ; --------------------------------------------------------------
 
 ; Make Ctrl + S work with cmd (windows) key
-;#s::^s
+LWin & s::Send ^{s}
 
 ; Selecting
-;#a::^a
+LWin & a::Send ^a
 
 ; Copying
-;#c::^c
+LWin & c::Send ^c
 
 ; Pasting
-;#v::^v
+LWin & v::Send ^v
 
 ; Cutting
-;#x::^x
+LWin & x::Send ^x
 
 ; Opening
-;#o::^o
+LWin & o::Send ^o
 
 ; Finding
-;#f::Send ^f
+LWin & f::Send ^f
 
 ; Undo
-;#z::^z
+LWin & z::Send ^z
 
 ; Redo
-;#y::^y
+LWin & y::Send ^y
 
 ; New tab
-;#t::^t
+LWin & t::Send ^t
 
 ; close tab
-;#w::^w
+LWin & w::Send ^w
 
 ; new doc
-;#n::^n
+LWin & n::Send ^n
 
 ; Close windows (cmd + q to Alt + F4)
-;#q::Send !{F4}
-
-; Remap Windows + Tab to Alt + Tab.
-Ctrl & Tab::AltTab
-;	Send {Blind}{Ctrl UP}{LAlt DOWN}{Tab}
-;return
+LWin & q::Send !{F4}
 
 ; minimize windows
-#m::WinMinimize,a
+LWin & m::WinMinimize,a
+
+^e::Send {End}
+^a::Send {Home}
+
+LWin & r::SendInput #r
+
+; Remap Windows + Tab to Alt + Tab.
+;Lwin & Tab::AltTab
+;Lalt & Tab::Send !{Tab}
+;Lwin & Tab::Send #{Tab}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Cmd-Tab ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+$Tab::
+vAltTabTickCount := A_TickCount
+if WinActive("ahk_class TaskSwitcherWnd")
+	SendInput, {Tab}
+else if GetKeyState("LWin", "P") {
+	SendInput, {LWin Down}{Tab}
+	SetTimer, AltTabSendTab, 50
+} else 
+    SendInput, {Tab}
+return
+
+AltTabSendTab:
+if GetKeyState("Tab", "P")
+	vAltTabTickCount := A_TickCount
+if WinActive("ahk_class TaskSwitcherWnd")
+&& !(A_TickCount - vAltTabTickCount > 400)
+	return
+SendInput, {LWin Up}
+SetTimer, AltTabSendTab, Off
+return
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; switch keyboard layout
-;!^Space::SendInput {Ctrl UP}{LShift DOWN}
+!^Space::SendInput {Ctrl UP}{LShift DOWN}
 
 ; --------------------------------------------------------------
 ; OS X keyboard mappings for special chars
 ; --------------------------------------------------------------
 
 ; Map Alt + L to @
-!l::SendInput {@}
-
-; Map Alt + N to \
-+!7::SendInput {\}
+LAlt & l::SendInput {@}
 
 ; Map Alt + N to ©
-!g::SendInput {©}
+LAlt & g::SendInput {©}
 
 ; Map Alt + o to ø
-!o::SendInput {ø}
+LAlt & o::SendInput {ø}
 
 ; Map Alt + 5 to [
-!5::SendInput {[}
+LAlt & 5::SendInput {[}
 
 ; Map Alt + 6 to ]
-!6::SendInput {]}
+LAlt & 6::SendInput {]}
 
 ; Map Alt + E to €
-!e::SendInput {€}
+LAlt & e::SendInput {€}
 
 ; Map Alt + - to –
-!-::SendInput {–}
+LAlt & -::SendInput {–}
 
 ; Map Alt + 8 to {
-!8::SendInput {{}
+LAlt & 8::SendInput {{}
 
 ; Map Alt + 9 to }
-!9::SendInput {}}
-
-; Map Alt + - to ±
-!+::SendInput {±}
+LAlt & 9::SendInput {}}
 
 ; Map Alt + R to ®
-!r::SendInput {®}
+;LAlt & r::SendInput {®}
 
 ; Map Alt + N to |
-!7::SendInput {|}
+LAlt & 7::SendInput {|}
 
 ; Map Alt + W to ∑
-!w::SendInput {∑}
+LAlt & w::SendInput {∑}
 
 ; Map Alt + N to ~
-!n::SendInput {~}
+LAlt & n::SendInput {~}
 
 ; Map Alt + 3 to #
-!3::SendInput {#}
+LAlt & 3::SendInput {#}
 
-
+#if getKeyState("LAlt")
+Shift & 6::Send {^}{Space}
+Shift & 7::SendInput {\}
+#if
 
 ; --------------------------------------------------------------
 ; Custom mappings for special chars
@@ -165,6 +191,31 @@ Ctrl & Tab::AltTab
 ;^ö::SendInput {{} 
 ;^ä::SendInput {}} 
 
+; alt-delete deletes previous word
+LAlt & BS::Send {LShift down}{LCtrl down}{Left}{LShift Up}{Lctrl up}{Backspace}
+^
+; Navigation of smaller chunks (skip word)
+LAlt & Left::Send {ctrl down}{Left}{ctrl up}
+LAlt & Right::Send {ctrl down}{Right}{ctrl up}
+
+; Navigation using of bigger chunks (Skip to start/end of line)
+#Left::Send {Home}
+#Right::Send {End}
+#Up::Send {PgUp}
+#Down::Send {PgDown}
+
+; Selection (uses a combination of the above with shift)
+^+Left::Send {shift down}{Home}}{shift up}
+^+Right::Send {shift down}{End}}{shift up}
+^+Up::Send {Lctrl down}{shift down}{Home}}{shift up}{Lctrl up}
+^+Down::Send {Lctrl down}{shift down}{End}}{shift up}{Lctrl up}
+
+; Start Menu
+LAlt & Space::Send ^{Esc}
+
+; Do not open start menu on Windows key or go to menu
+;#~LAlt Up::Send {Blind}{vk07}
+;#~LWin Up:: return
 
 ; --------------------------------------------------------------
 ; Application specific
