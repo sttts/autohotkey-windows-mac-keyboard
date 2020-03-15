@@ -72,6 +72,7 @@ LWin & o::Send ^o
 
 ; Finding
 LWin & f::Send ^f
+LWin & g::Send F3
 
 ; Undo
 LWin & z::Send ^z

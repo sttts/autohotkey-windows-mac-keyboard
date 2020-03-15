@@ -71,6 +71,7 @@ LAlt & o::Send ^o
 
 ; Finding
 LAlt & f::Send ^f
+LAlt & g::Send F3
 
 ; Undo
 LAlt & z::Send ^z
