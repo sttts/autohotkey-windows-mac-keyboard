@@ -142,7 +142,7 @@ return
 
 ; Map Alt + L to @
 ; RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Policies\System, DisableLockWorkstation, 1
-LWin & l::SendInput {@}
+LWin & l::Send {LAlt Down}{LAlt Up}{@}
 
 ; Map Alt + N to ©
 LWin & g::SendInput {©}
